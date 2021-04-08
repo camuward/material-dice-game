@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import {
   createMuiTheme,
   makeStyles,
-  ThemeProvider
+  ThemeProvider,
 } from "@material-ui/core/styles";
 import PlayerSetup from "./PlayerSetup";
 import Rolling from "./Rolling";
@@ -17,22 +17,22 @@ const theme = createMuiTheme({
       light: "#77ffc5",
       main: "#29ff94",
       dark: "#00ca65",
-      contrastText: "#000"
+      contrastText: "#000",
     },
     secondary: {
       light: "#2c2c2c",
       main: "#000",
       dark: "#000",
-      contrastText: "#fff"
-    }
-  }
+      contrastText: "#fff",
+    },
+  },
 });
 
 const gameStates = {
   ROLLING: "ROLLING",
   RECAP: "RECAP",
   SETUP: "SETUP",
-  ERROR: "ERROR"
+  ERROR: "ERROR",
 };
 
 export default function App() {

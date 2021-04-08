@@ -11,15 +11,15 @@ import CardActions from "@material-ui/core/CardActions";
 import NavigateNextRoundedIcon from "@material-ui/icons/NavigateNextRounded";
 import Typography from "@material-ui/core/Typography";
 
-const imageSources = [...Array(6).keys()].map((i) => `/${i}.png`);
+const imageSources = [...Array(6).keys()].map(i => `/${i}.png`);
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: theme.spacing(8)
+    gap: theme.spacing(8),
   },
   paper: {
     width: 100,
@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
       top: "50%",
       left: "50%",
       fontSize: 80,
-      transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)"
-    }
+      transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
+    },
   },
   paperFive: {
     width: 100,
@@ -50,29 +50,29 @@ const useStyles = makeStyles((theme) => ({
       top: "50%",
       left: "50%",
       fontSize: 80,
-      transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)"
-    }
+      transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
+    },
   },
   roulette: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: theme.spacing(2)
+    gap: theme.spacing(2),
   },
   dieControls: {
     display: "block",
-    position: "relative"
+    position: "relative",
   },
   playerCard: {
     minWidth: 100,
     position: "relative",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   playerCardOut: {
     position: "relative",
     overflow: "hidden",
     minWidth: 100,
-    backgroundColor: "#eee"
+    backgroundColor: "#eee",
   },
   playerCardLeave: {
     position: "absolute",
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: "0%",
     transition:
       "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s",
-    visibility: "hidden"
+    visibility: "hidden",
   },
   playerCardLeaveShow: {
     position: "absolute",
@@ -100,36 +100,36 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     opacity: "100%",
-    transition: "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)"
+    transition: "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
   },
   handValue: {
-    color: "#f00"
+    color: "#f00",
   },
   playerScore: {
     marginTop: theme.spacing(2),
     "& > span": {
       marginLeft: theme.spacing(0.5),
-      fontWeight: "bold"
-    }
+      fontWeight: "bold",
+    },
   },
   inGoodScore: {
     color: theme.palette.primary.main,
     paddingRight: 3,
     borderRadius: 4,
-    backgroundColor: "#000"
+    backgroundColor: "#000",
   },
   inBadScore: {
     color: "#fff",
     paddingRight: 3,
     borderRadius: 4,
-    backgroundColor: "#000"
+    backgroundColor: "#000",
   },
   outGoodScore: {
-    color: "#000"
+    color: "#000",
   },
   outBadScore: {
-    color: theme.palette.error.main
-  }
+    color: theme.palette.error.main,
+  },
 }));
 
 const Player = ({ player, onLeave, canLeave }) => {
@@ -275,39 +275,39 @@ export default function Rolling({ list, setList, ...props }) {
   const styles = useStyles();
 
   function handleInit() {
-    setList(list.map((p) => ({ ...p, inRound: true })));
+    setList(list.map(p => ({ ...p, inRound: true })));
     setRoundOver(false);
     setHideRoulette(false);
   }
 
   function handleRoll(r) {
     if (r === 5) {
-      const players = list.map((player) =>
+      const players = list.map(player =>
         player.inRound
           ? {
               ...player,
               hand: 0,
-              inRound: false
+              inRound: false,
             }
           : player
       );
       setList(players);
     } else {
-      const players = list.map((player) =>
+      const players = list.map(player =>
         player.inRound
           ? {
               ...player,
-              hand: player.hand + r
+              hand: player.hand + r,
             }
           : player
       );
       const count = list.length;
       setList(
-        players.map((p) => {
+        players.map(p => {
           if (p.inRound && p.cpu) {
             if (
               Math.random() -
-                (list.filter((j) => !j.inRound).length / count) * 0.2 -
+                (list.filter(j => !j.inRound).length / count) * 0.2 -
                 0.3 * Math.max(0, Math.min(1, round / 8)) -
                 Math.pow(Math.min((p.score + p.hand) / 100, 1), 10) * 0.6 <
               0.05
@@ -324,7 +324,7 @@ export default function Rolling({ list, setList, ...props }) {
 
   function handlePlayerLeave(name) {
     const players = list;
-    const player = players.findIndex((p) => p.name === name);
+    const player = players.findIndex(p => p.name === name);
     if (!blocking && players[player].inRound) {
       players[player].inRound = false;
       setList(players);
@@ -333,11 +333,11 @@ export default function Rolling({ list, setList, ...props }) {
   }
 
   function handleEnd() {
-    const players = list.map((p) => ({
+    const players = list.map(p => ({
       ...p,
       score: p.score + p.hand,
       hand: 0,
-      inRound: false
+      inRound: false,
     }));
     setList(players);
     setRoundOver(true);
@@ -354,13 +354,13 @@ export default function Rolling({ list, setList, ...props }) {
             onRoll={handleRoll}
             blocking={blocking}
             setBlocking={setBlocking}
-            mustEnd={list.every((p) => !p.inRound)}
+            mustEnd={list.every(p => !p.inRound)}
             onEnd={handleEnd}
           />
         )}
       </Grow>
       <Grid container justify="center" alignItems="center" spacing={2}>
-        {list.map((player) => (
+        {list.map(player => (
           <Grid item key={player.name}>
             <Player
               player={player}
