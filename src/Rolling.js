@@ -42,19 +42,6 @@ const useStyles = makeStyles(theme => ({
     overflow: "hidden",
     position: "relative",
     backgroundColor: "#f44336",
-    transition: "background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-    "& > span": {
-      fontFamily: "font-family: -apple-system,system-ui,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif",
-      color: theme.palette.secondary.main,
-      backfaceVisibility: "hidden",
-      color: "#fff",
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      fontSize: 80,
-      transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
-      opacity: "100%",
-    },
   },
   roulette: {
     display: "flex",
@@ -87,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    opacity: "0%",
+    opacity: 0.0,
     transition:
       "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s",
     visibility: "hidden",
@@ -102,7 +89,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    opacity: "100%",
+    opacity: 1.0,
     transition: "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
   },
   handValue: {
@@ -221,6 +208,7 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
         <Paper
           className={roll === 5 && !blocking ? styles.paperFive : styles.paper}
         >
+          <Typography variant="h5">
           <span
             className={roll === 1 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
           >
@@ -251,6 +239,7 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
           >
             6
           </span>
+          </Typography>
         </Paper>
       </Box>
       <Box className={styles.dieControls}>
