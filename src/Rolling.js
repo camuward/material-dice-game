@@ -10,8 +10,14 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import NavigateNextRoundedIcon from "@material-ui/icons/NavigateNextRounded";
 import Typography from "@material-ui/core/Typography";
+import StarIcon from "@material-ui/icons/Star";
 
-const imageSources = [...Array(6).keys()].map(i => `/${i}.png`);
+const nameRegexReserved = /^[Cc][Pp][Uu].{0,}/;
+
+function nameValidateNotReserved(name) {
+  // return true;
+  return !nameRegexReserved.test(name);
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -129,7 +135,16 @@ const useStyles = makeStyles(theme => ({
     left: "50%",
     fontSize: 80,
     transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
-  }
+  },
+  paperFlex: {
+    width: "100%",
+  },
+  paperGrid: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
 }));
 
 const Player = ({ player, onLeave, canLeave }) => {
@@ -219,37 +234,49 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
         >
           <Typography
             variant="h5"
-            className={`${styles.rouletteText} ${roll === 1 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
+            className={`${styles.rouletteText} ${
+              roll === 1 ? dieStyle.dieRollSelected : dieStyle.dieRoll
+            }`}
           >
             1
           </Typography>
           <Typography
             variant="h5"
-            className={`${styles.rouletteText} ${roll === 2 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
+            className={`${styles.rouletteText} ${
+              roll === 2 ? dieStyle.dieRollSelected : dieStyle.dieRoll
+            }`}
           >
             2
           </Typography>
           <Typography
             variant="h5"
-            className={`${styles.rouletteText} ${roll === 3 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
+            className={`${styles.rouletteText} ${
+              roll === 3 ? dieStyle.dieRollSelected : dieStyle.dieRoll
+            }`}
           >
             3
           </Typography>
           <Typography
             variant="h5"
-            className={`${styles.rouletteText} ${roll === 4 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
+            className={`${styles.rouletteText} ${
+              roll === 4 ? dieStyle.dieRollSelected : dieStyle.dieRoll
+            }`}
           >
             4
           </Typography>
           <Typography
             variant="h5"
-            className={`${styles.rouletteText} ${roll === 5 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
+            className={`${styles.rouletteText} ${
+              roll === 5 ? dieStyle.dieRollSelected : dieStyle.dieRoll
+            }`}
           >
             5
           </Typography>
           <Typography
             variant="h5"
-            className={`${styles.rouletteText} ${roll === 6 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
+            className={`${styles.rouletteText} ${
+              roll === 6 ? dieStyle.dieRollSelected : dieStyle.dieRoll
+            }`}
           >
             6
           </Typography>
@@ -270,6 +297,42 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
   );
 };
 
+const PlayerLeaderboard = ({ player, rank }) => {
+  const styles = useStyles();
+  return (
+    <Grid item className={styles.paperFlex} xs={12} sm={8} md={6} lg={4}>
+      <Paper>
+        <Grid
+          container
+          justify="space-between"
+          alignItems="center"
+          className={styles.paperGrid}
+        >
+          <Grid item>
+            <Grid container justify="center" alignItems="center" spacing={1}>
+              <Grid item>
+                <Typography variant="h5">{player.name}</Typography>
+              </Grid>
+              <Grid item>
+                {rank < 3 ? (
+                  Array(3 - rank)
+                    .fill()
+                    .map((_, i) => <StarIcon key={i} />)
+                ) : (
+                  <></>
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item>
+            <Typography variant="h5">{`${player.score} pts`}</Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Grid>
+  );
+};
+
 export default function Rolling({ list, setList, ...props }) {
   const [round, setRound] = useState(0);
   const [blocking, setBlocking] = useState(false);
@@ -280,7 +343,9 @@ export default function Rolling({ list, setList, ...props }) {
   const styles = useStyles();
 
   function handleInit() {
-    setList(list.map(p => ({ ...p, inRound: true })));
+    const players = list.filter(p => !p.cpu).sort((a, b) => a.name.localeCompare(b.name));
+    const cpus = list.filter(p => p.cpu).sort((a, b) => parseInt(a.name.slice(3)) - parseInt(b.name.slice(3)));
+    setList([...players, ...cpus].map(p => ({ ...p, inRound: true })))
     setRoundOver(false);
     setHideRoulette(false);
   }
@@ -353,28 +418,43 @@ export default function Rolling({ list, setList, ...props }) {
     <Box className={styles.root}>
       <Grow in>
         {hideRoulette ? (
-          <></>
+          <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+            spacing={2}
+          >
+            {list
+              .sort((a, b) => b.score - a.score)
+              .map((p, i) => (
+                <PlayerLeaderboard player={p} rank={i} key={p.name} />
+              ))}
+          </Grid>
         ) : (
-          <Roulette
-            onRoll={handleRoll}
-            blocking={blocking}
-            setBlocking={setBlocking}
-            mustEnd={list.every(p => !p.inRound)}
-            onEnd={handleEnd}
-          />
+          <>
+            <Roulette
+              onRoll={handleRoll}
+              blocking={blocking}
+              setBlocking={setBlocking}
+              mustEnd={list.every(p => !p.inRound)}
+              onEnd={handleEnd}
+            />
+            <Grid container justify="center" alignItems="center" spacing={2}>
+              {list.map(player => (
+                <Grid item key={player.name}>
+                  <Player
+                    player={player}
+                    onLeave={() => handlePlayerLeave(player.name)}
+                    canLeave={!blocking}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </>
         )}
       </Grow>
-      <Grid container justify="center" alignItems="center" spacing={2}>
-        {list.map(player => (
-          <Grid item key={player.name}>
-            <Player
-              player={player}
-              onLeave={() => handlePlayerLeave(player.name)}
-              canLeave={!blocking}
-            />
-          </Grid>
-        ))}
-      </Grid>
+
       <Grow in={roundOver}>
         <Button
           variant="contained"

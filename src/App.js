@@ -40,7 +40,9 @@ export default function App() {
   const [players, setPlayers] = useState([]);
 
   function handleSetupComplete(arr) {
-    setPlayers(arr);
+    const plays = arr.filter(p => !p.cpu).sort((a, b) => a.name.localeCompare(b.name));
+    const cpus = arr.filter(p => p.cpu).sort((a, b) => parseInt(a.name.slice(3)) - parseInt(b.name.slice(3)));
+    setPlayers([...plays, ...cpus].map(p => ({ ...p, inRound: true })))
     setGameState(gameStates.ROLLING);
   }
 
