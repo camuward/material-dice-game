@@ -53,6 +53,7 @@ const useStyles = makeStyles(theme => ({
       left: "50%",
       fontSize: 80,
       transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
+      opacity: "100%",
     },
   },
   roulette: {
