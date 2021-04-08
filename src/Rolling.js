@@ -42,6 +42,7 @@ const useStyles = makeStyles(theme => ({
     overflow: "hidden",
     position: "relative",
     backgroundColor: "#f44336",
+    transition: "background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
   },
   roulette: {
     display: "flex",
@@ -74,7 +75,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    opacity: 0.0,
+    opacity: "0%",
     transition:
       "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s",
     visibility: "hidden",
@@ -89,7 +90,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    opacity: 1.0,
+    opacity: "100%",
     transition: "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
   },
   handValue: {
@@ -120,6 +121,15 @@ const useStyles = makeStyles(theme => ({
   outBadScore: {
     color: theme.palette.error.main,
   },
+  rouletteText: {
+    backfaceVisibility: "hidden",
+    color: "#000",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    fontSize: 80,
+    transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
+  }
 }));
 
 const Player = ({ player, onLeave, canLeave }) => {
@@ -149,8 +159,7 @@ const Player = ({ player, onLeave, canLeave }) => {
                   : styles.outBadScore
               }
             >
-              {" "}
-              +{player.hand}
+              {` +${player.hand}`}
             </span>
           </Typography>
           <Typography variant="h6" className={styles.playerScoreCombined}>
@@ -208,37 +217,41 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
         <Paper
           className={roll === 5 && !blocking ? styles.paperFive : styles.paper}
         >
-          <Typography variant="h5">
-          <span
-            className={roll === 1 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
+          <Typography
+            variant="h5"
+            className={`${styles.rouletteText} ${roll === 1 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
           >
             1
-          </span>
-          <span
-            className={roll === 2 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
+          </Typography>
+          <Typography
+            variant="h5"
+            className={`${styles.rouletteText} ${roll === 2 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
           >
             2
-          </span>
-          <span
-            className={roll === 3 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
+          </Typography>
+          <Typography
+            variant="h5"
+            className={`${styles.rouletteText} ${roll === 3 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
           >
             3
-          </span>
-          <span
-            className={roll === 4 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
+          </Typography>
+          <Typography
+            variant="h5"
+            className={`${styles.rouletteText} ${roll === 4 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
           >
             4
-          </span>
-          <span
-            className={roll === 5 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
+          </Typography>
+          <Typography
+            variant="h5"
+            className={`${styles.rouletteText} ${roll === 5 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
           >
             5
-          </span>
-          <span
-            className={roll === 6 ? dieStyle.dieRollSelected : dieStyle.dieRoll}
+          </Typography>
+          <Typography
+            variant="h5"
+            className={`${styles.rouletteText} ${roll === 6 ? dieStyle.dieRollSelected : dieStyle.dieRoll}`}
           >
             6
-          </span>
           </Typography>
         </Paper>
       </Box>

@@ -1,27 +1,11 @@
 .dieRoll {
   opacity: 0.0;
   animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  color: #fff;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 80;
-  transition: opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dieRollSelected {
   opacity: 1.0;
   animation: slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  color: #fff;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 80;
-  transition: opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slide-up {
