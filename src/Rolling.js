@@ -288,6 +288,7 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
             onClick={fiveRolled ? onEnd : rollIt}
             variant={fiveRolled ? "outlined" : "contained"}
             color="secondary"
+            size="large"
           >
             {fiveRolled ? "End Round" : "Roll"}
           </Button>
@@ -461,6 +462,7 @@ export default function Rolling({ list, setList, ...props }) {
           color="primary"
           endIcon={<NavigateNextRoundedIcon />}
           onClick={handleInit}
+          size="large"
         >
           Next
         </Button>
