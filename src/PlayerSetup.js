@@ -14,6 +14,7 @@ import Divider from "@material-ui/core/Divider";
 import GamesRoundedIcon from "@material-ui/icons/GamesRounded";
 import InfoDialog from "./InfoDialog";
 import Typography from "@material-ui/core/Typography";
+import Toolbar from '@material-ui/core/Toolbar';
 
 const nameRegexLength = /^.{3,22}$/;
 const nameRegexValidChars = /^\S[\S ]{0,20}\S$/;
@@ -49,6 +50,16 @@ const useStyles = makeStyles(theme => ({
   lightText: {
     color: "#aaa",
   },
+  toolbar: {
+    display: "flex",
+    width: "100%",
+    gap: theme.spacing(2),
+    justifyContent: "center",
+    alignItems: "flex-start",
+    "& > *:not(#infoButton)": {
+      marginTop: theme.spacing(0.75)
+    }
+  }
 }));
 
 function Alert(props) {
@@ -169,25 +180,17 @@ function NameEntry({ list, onSubmit, onStart }) {
 
   return (
     <form noValidate autoComplete="off" onSubmit={handleAddPlayer}>
-      <Grid
-        container
-        direction="row"
-        spacing={2}
-        justify="center"
-        alignItems="center"
-      >
-        <Grid item>
+        <Toolbar className={styles.toolbar}>
           <TextField
             value={value}
             label="Player"
             size="small"
+            variant="outlined"
             onChange={event => handleEntryChange(event)}
             error={!valid}
             helperText={valid ? "" : reason}
             autoFocus
           />
-        </Grid>
-        <Grid item>
           <Button
             disableElevation
             variant="contained"
@@ -197,15 +200,9 @@ function NameEntry({ list, onSubmit, onStart }) {
           >
             Add
           </Button>
-        </Grid>
 
-        <Grid item>
           <Button onClick={handleAddCpu}>Add CPU</Button>
-        </Grid>
-        <Grid item>
           <Divider className={styles.divider} orientation="vertical" />
-        </Grid>
-        <Grid item>
           <Button
             onClick={handleStartGame}
             startIcon={<GamesRoundedIcon />}
@@ -216,10 +213,7 @@ function NameEntry({ list, onSubmit, onStart }) {
           >
             Play
           </Button>
-        </Grid>
-        <Grid item>
-          <InfoDialog />
-        </Grid>
+          <InfoDialog id="infoButton" />
         {errorReasons.map(err => (
           <Snackbar
             open
@@ -233,7 +227,7 @@ function NameEntry({ list, onSubmit, onStart }) {
             </Alert>
           </Snackbar>
         ))}
-      </Grid>
+      </Toolbar>
     </form>
   );
 }

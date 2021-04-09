@@ -16,11 +16,11 @@ const LightIconButton = withStyles(theme => ({
   },
 }))(IconButton);
 
-export default function InfoDialog() {
+export default function InfoDialog(props) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <LightIconButton onClick={() => setOpen(true)}>
+      <LightIconButton onClick={() => setOpen(true)} {...props}>
         <HelpRoundedIcon />
       </LightIconButton>
       <Dialog open={open} onClose={() => setOpen(false)}>
