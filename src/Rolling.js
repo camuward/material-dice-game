@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
   paperFive: {
     width: 100,
-    height: 150,
+    height: 130,
     overflow: "hidden",
     position: "relative",
     backgroundColor: "#f44336",
