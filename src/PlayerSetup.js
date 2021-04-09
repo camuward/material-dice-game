@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import CreateRoundedIcon from "@material-ui/icons/Create";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Grid from "@material-ui/core/Grid";
+import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -234,10 +235,15 @@ function NameEntry({ list, onSubmit, onStart }) {
 }
 
 function PlayerPreview({ onDelete, children, ...props }) {
+  const [show, setShow] = useState(true);
   const styles = useStyles();
 
+  function handleDelete() {
+    setShow(false);
+  }
+
   return (
-    // <Grow in>
+    <Grow in={show} onExited={() => onDelete()}>
     <Grid item className={styles.paper} xs={12} sm={8} md={6} lg={4}>
       <Paper {...props}>
         <Grid container justify="space-between" alignItems="center" className={styles.paperGrid}>
@@ -245,7 +251,7 @@ function PlayerPreview({ onDelete, children, ...props }) {
           <Grid item>
             <IconButton
               aria-label={`delete player ${children}`}
-              onClick={onDelete}
+              onClick={handleDelete}
             >
               <DeleteIcon />
             </IconButton>
@@ -253,11 +259,11 @@ function PlayerPreview({ onDelete, children, ...props }) {
         </Grid>
       </Paper>
     </Grid>
-    // </Grow>
+    </Grow>
   );
 }
 
-export default function PlayerSetup({ onBeginGame }) {
+const PlayerSetup = forwardRef(({ onBeginGame, ...props }, ref) => {
   const styles = useStyles();
   const [players, setPlayers] = useState([]);
 
@@ -282,7 +288,7 @@ export default function PlayerSetup({ onBeginGame }) {
   }
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} {...props} ref={ref}>
       <Grid container direction="column" justify="center" spacing={4}>
         <Grid item className={styles.entry}>
           <NameEntry
@@ -312,4 +318,6 @@ export default function PlayerSetup({ onBeginGame }) {
       </Grid>
     </div>
   );
-}
+});
+
+export default PlayerSetup;

@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, forwardRef } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import dieStyle from "./Rolling.module.css";
 import { makeStyles } from "@material-ui/core/styles";
+import Collapse from "@material-ui/core/Collapse";
 import Grow from "@material-ui/core/Grow";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
@@ -298,57 +299,61 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
   );
 };
 
-const PlayerLeaderboard = ({ player, rank }) => {
+const PlayerLeaderboard = ({ player, rank, ...props }) => {
   const styles = useStyles();
   return (
-    <Grid item className={styles.paperFlex} xs={12} sm={8} md={6} lg={4}>
-      <Paper>
-        <Grid
-          container
-          justify="space-between"
-          alignItems="center"
-          className={styles.paperGrid}
-        >
-          <Grid item>
-            <Grid container justify="center" alignItems="center" spacing={1}>
-              <Grid item>
-                <Typography variant="h5">{player.name}</Typography>
-              </Grid>
-              <Grid item>
-                {rank < 3 ? (
-                  Array(3 - rank)
-                    .fill()
-                    .map((_, i) => <StarIcon key={i} />)
-                ) : (
-                  <></>
-                )}
+    <Grid item className={styles.paperFlex} xs={12} sm={8} md={6} lg={4} {...props}>
+      <Grow in>
+        <Paper>
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className={styles.paperGrid}
+          >
+            <Grid item>
+              <Grid container justify="center" alignItems="center" spacing={1}>
+                <Grid item>
+                  <Typography variant="h5">{player.name}</Typography>
+                </Grid>
+                <Grid item>
+                  {rank < 3 ? (
+                    Array(3 - rank)
+                      .fill()
+                      .map((_, i) => <StarIcon key={i} />)
+                  ) : (
+                    <></>
+                  )}
+                </Grid>
               </Grid>
             </Grid>
+            <Grid item>
+              <Typography variant="h5">{`${player.score} pts`}</Typography>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography variant="h5">{`${player.score} pts`}</Typography>
-          </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </Grow>
     </Grid>
   );
 };
 
-export default function Rolling({ list, setList, ...props }) {
+const Rolling = forwardRef(({ list, setList, ...props }, ref) => {
   const [round, setRound] = useState(0);
   const [blocking, setBlocking] = useState(false);
   const [, updateNothing] = useState();
   const [roundOver, setRoundOver] = useState(false);
-  const [hideRoulette, setHideRoulette] = useState(false);
 
   const styles = useStyles();
 
   function handleInit() {
-    const players = list.filter(p => !p.cpu).sort((a, b) => a.name.localeCompare(b.name));
-    const cpus = list.filter(p => p.cpu).sort((a, b) => parseInt(a.name.slice(3)) - parseInt(b.name.slice(3)));
-    setList([...players, ...cpus].map(p => ({ ...p, inRound: true })))
+    const players = list
+      .filter(p => !p.cpu)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    const cpus = list
+      .filter(p => p.cpu)
+      .sort((a, b) => parseInt(a.name.slice(3)) - parseInt(b.name.slice(3)));
+    setList([...players, ...cpus].map(p => ({ ...p, inRound: true })));
     setRoundOver(false);
-    setHideRoulette(false);
   }
 
   function handleRoll(r) {
@@ -412,50 +417,49 @@ export default function Rolling({ list, setList, ...props }) {
     }));
     setList(players);
     setRoundOver(true);
-    setHideRoulette(true);
   }
 
   return (
-    <Box className={styles.root}>
-      <Grow in>
-        {hideRoulette ? (
-          <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="center"
-            spacing={2}
-          >
-            {list
-              .sort((a, b) => b.score - a.score)
-              .map((p, i) => (
-                <PlayerLeaderboard player={p} rank={i} key={p.name} />
-              ))}
+    <Box className={styles.root} {...props} ref={ref}>
+      {!roundOver && (
+        <>
+          <Roulette
+            onRoll={handleRoll}
+            blocking={blocking}
+            setBlocking={setBlocking}
+            mustEnd={list.every(p => !p.inRound)}
+            onEnd={handleEnd}
+          />
+          <Grid container justify="center" alignItems="center" spacing={2}>
+            {list.map(player => (
+              <Grid item key={player.name}>
+                <Player
+                  player={player}
+                  onLeave={() => handlePlayerLeave(player.name)}
+                  canLeave={!blocking}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ) : (
-          <>
-            <Roulette
-              onRoll={handleRoll}
-              blocking={blocking}
-              setBlocking={setBlocking}
-              mustEnd={list.every(p => !p.inRound)}
-              onEnd={handleEnd}
-            />
-            <Grid container justify="center" alignItems="center" spacing={2}>
-              {list.map(player => (
-                <Grid item key={player.name}>
-                  <Player
-                    player={player}
-                    onLeave={() => handlePlayerLeave(player.name)}
-                    canLeave={!blocking}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </>
-        )}
-      </Grow>
-
+        </>
+      )}
+      {/* <Collapse in={roundOver} timeout={10}> */}
+      <Grow in={roundOver}>
+          <Typography variant="h3">Leaderboard</Typography>
+        </Grow>
+        <Grid
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          spacing={2}
+        >
+          {roundOver &&
+            [...list]
+              .sort((a, b) => b.score - a.score)
+              .map((p, i) => <PlayerLeaderboard key={i} player={p} rank={i} />)}
+        </Grid>
+      {/* </Collapse> */}
       <Grow in={roundOver}>
         <Button
           variant="contained"
@@ -463,10 +467,13 @@ export default function Rolling({ list, setList, ...props }) {
           endIcon={<NavigateNextRoundedIcon />}
           onClick={handleInit}
           size="large"
+          disabled={!roundOver}
         >
           Next
         </Button>
       </Grow>
     </Box>
   );
-}
+});
+
+export default Rolling;
