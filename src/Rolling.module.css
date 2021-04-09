@@ -1,11 +1,11 @@
 .dieRoll {
   opacity: 0.0;
-  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
+  animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
 }
 
 .dieRollSelected {
   opacity: 1.0;
-  animation: slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
+  animation: slide-down 0.2s cubic-bezier(0.16, 1, 0.3, 1) 0s forwards;
 }
 
 @keyframes slide-up {
@@ -13,13 +13,13 @@
     transform: translate(-50%, -50%);
   }
   to {
-    transform: translate(-50%, -25%);
+    transform: translate(-50%, -40%) rotate3d(1, 0, 0, -90deg);
   }
 }
 
 @keyframes slide-down {
   from {
-    transform: translate(-50%, -75%);
+    transform: translate(-50%, -70%) rotate3d(1, 0, 0, 90deg);
   }
   to {
     transform: translate(-50%, -50%);

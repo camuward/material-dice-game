@@ -2,12 +2,13 @@ import { useEffect, useState, useRef, forwardRef } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import dieStyle from "./Rolling.module.css";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Collapse from "@material-ui/core/Collapse";
 import Grow from "@material-ui/core/Grow";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import Card from "@material-ui/core/Card";
+import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
 import NavigateNextRoundedIcon from "@material-ui/icons/NavigateNextRounded";
 import Typography from "@material-ui/core/Typography";
@@ -34,14 +35,6 @@ const useStyles = makeStyles(theme => ({
     overflow: "hidden",
     position: "relative",
     transition: "background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-    "& > span": {
-      backfaceVisibility: "hidden",
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      fontSize: 80,
-      transition: "opacity 0.1s cubic-bezier(0.16, 1, 0.3, 1)",
-    },
   },
   paperFive: {
     width: 100,
@@ -70,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     position: "relative",
     overflow: "hidden",
     minWidth: 100,
-    backgroundColor: "#eee",
+    backgroundColor: "#ddd",
   },
   playerCardLeave: {
     position: "absolute",
@@ -99,9 +92,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     opacity: "100%",
     transition: "opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-  },
-  handValue: {
-    color: "#f00",
   },
   playerScore: {
     marginTop: theme.spacing(2),
@@ -146,6 +136,18 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
   },
+  outLabel: {
+    ...theme.typography.caption,
+    color: "#fff",
+    padding: 3,
+    borderRadius: 4,
+    verticalAlign: "middle",
+    backgroundColor: "#000",
+    fontWeight: "bold"
+  },
+  playerList: {
+    marginTop: theme.spacing(4),
+  },
 }));
 
 const Player = ({ player, onLeave, canLeave }) => {
@@ -160,7 +162,8 @@ const Player = ({ player, onLeave, canLeave }) => {
       <CardActions>
         <Box>
           <Typography variant="h5" component="h2">
-            {player.name}
+            {player.name}{" "}
+            {!player.inRound && <span className={styles.outLabel}>OUT</span>}
           </Typography>
           <Typography className={styles.playerScore}>
             {player.score}
@@ -302,7 +305,15 @@ const Roulette = ({ onRoll, setBlocking, blocking, mustEnd, onEnd }) => {
 const PlayerLeaderboard = ({ player, rank, ...props }) => {
   const styles = useStyles();
   return (
-    <Grid item className={styles.paperFlex} xs={12} sm={8} md={6} lg={4} {...props}>
+    <Grid
+      item
+      className={styles.paperFlex}
+      xs={12}
+      sm={8}
+      md={6}
+      lg={4}
+      {...props}
+    >
       <Grow in>
         <Paper>
           <Grid
@@ -422,45 +433,52 @@ const Rolling = forwardRef(({ list, setList, ...props }, ref) => {
   return (
     <Box className={styles.root} {...props} ref={ref}>
       {!roundOver && (
-        <>
-          <Roulette
-            onRoll={handleRoll}
-            blocking={blocking}
-            setBlocking={setBlocking}
-            mustEnd={list.every(p => !p.inRound)}
-            onEnd={handleEnd}
-          />
-          <Grid container justify="center" alignItems="center" spacing={2}>
-            {list.map(player => (
-              <Grid item key={player.name}>
-                <Player
-                  player={player}
-                  onLeave={() => handlePlayerLeave(player.name)}
-                  canLeave={!blocking}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
-      {/* <Collapse in={roundOver} timeout={10}> */}
-      <Grow in={roundOver}>
-          <Typography variant="h3">Leaderboard</Typography>
+        <Grow in>
+          <Box>
+            <Roulette
+              onRoll={handleRoll}
+              blocking={blocking}
+              setBlocking={setBlocking}
+              mustEnd={list.every(p => !p.inRound)}
+              onEnd={handleEnd}
+            />
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              spacing={2}
+              className={styles.playerList}
+            >
+              {list.map(player => (
+                <Grid item key={player.name}>
+                  <Player
+                    player={player}
+                    onLeave={() => handlePlayerLeave(player.name)}
+                    canLeave={!blocking}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
         </Grow>
-        <Grid
-          container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          spacing={2}
-        >
-          {roundOver &&
-            [...list]
-              .sort((a, b) => b.score - a.score)
-              .map((p, i) => <PlayerLeaderboard key={i} player={p} rank={i} />)}
-        </Grid>
-      {/* </Collapse> */}
-      <Grow in={roundOver}>
+      )}
+      <Grow in={roundOver} {...(roundOver ? {} : { timeout: 0 })}>
+        <Typography variant="h3">Leaderboard</Typography>
+      </Grow>
+      <Grid
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+        spacing={2}
+      >
+        {roundOver &&
+          [...list]
+            .sort((a, b) => b.score - a.score)
+            .map((p, i) => <PlayerLeaderboard key={i} player={p} rank={i} />)}
+      </Grid>
+
+      <Grow in={roundOver} {...(roundOver ? {} : { timeout: 0 })}>
         <Button
           variant="contained"
           color="primary"
