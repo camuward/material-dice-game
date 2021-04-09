@@ -8,6 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import HelpRoundedIcon from "@material-ui/icons/HelpRounded";
+import Link from "@material-ui/core/Link";
 
 const LightIconButton = withStyles(theme => ({
   root: {
@@ -32,12 +33,22 @@ export default function InfoDialog() {
             their earnings by clicking the `leave` button on their name.
           </DialogContentText>
           <DialogContentText>
-            Programmed by Cameron Ward, 2021. Game designed by John Scarne,
-            1945.
+            Original game designed by John Scarne, 1945.
+          </DialogContentText>
+          <DialogContentText>
+            Programmed by Cameron Ward, 2021.{" "}
+            <Link
+              href="https://github.com/liquifi/material-dice-game"
+              target="_blank"
+              rel="noopener"
+              color="secondary"
+            >
+              Source code
+            </Link>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="secondary" autoFocus>
+          <Button onClick={() => setOpen(false)} color="secondary">
             Close
           </Button>
         </DialogActions>

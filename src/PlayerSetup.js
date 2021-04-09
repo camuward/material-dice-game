@@ -45,7 +45,10 @@ const useStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(2),
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
-  }
+  },
+  lightText: {
+    color: "#aaa",
+  },
 }));
 
 function Alert(props) {
@@ -181,6 +184,7 @@ function NameEntry({ list, onSubmit, onStart }) {
             onChange={event => handleEntryChange(event)}
             error={!valid}
             helperText={valid ? "" : reason}
+            autoFocus
           />
         </Grid>
         <Grid item>
@@ -244,21 +248,28 @@ function PlayerPreview({ onDelete, children, ...props }) {
 
   return (
     <Grow in={show} onExited={() => onDelete()}>
-    <Grid item className={styles.paper} xs={12} sm={8} md={6} lg={4}>
-      <Paper {...props}>
-        <Grid container justify="space-between" alignItems="center" className={styles.paperGrid}>
-          <Grid item><Typography variant="h5">{children}</Typography></Grid>
-          <Grid item>
-            <IconButton
-              aria-label={`delete player ${children}`}
-              onClick={handleDelete}
-            >
-              <DeleteIcon />
-            </IconButton>
+      <Grid item className={styles.paper} xs={12} sm={8} md={6} lg={4}>
+        <Paper {...props}>
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className={styles.paperGrid}
+          >
+            <Grid item>
+              <Typography variant="h5">{children}</Typography>
+            </Grid>
+            <Grid item>
+              <IconButton
+                aria-label={`delete player ${children}`}
+                onClick={handleDelete}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Grid>
           </Grid>
-        </Grid>
-      </Paper>
-    </Grid>
+        </Paper>
+      </Grid>
     </Grow>
   );
 }
@@ -305,6 +316,13 @@ const PlayerSetup = forwardRef(({ onBeginGame, ...props }, ref) => {
             alignItems="center"
             spacing={2}
           >
+            {players.length === 0 && (
+              <Grid item>
+                <Typography variant="h5" className={styles.lightText}>
+                  enter player name and click add
+                </Typography>
+              </Grid>
+            )}
             {players.map((player, i) => (
               <PlayerPreview
                 onDelete={() => handleRemovePlayer(player.name)}
