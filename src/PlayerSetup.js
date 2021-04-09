@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import CreateRoundedIcon from "@material-ui/icons/Create";
@@ -242,12 +242,10 @@ function PlayerPreview({ onDelete, children, ...props }) {
   const [show, setShow] = useState(true);
   const styles = useStyles();
 
-  function handleDelete() {
-    setShow(false);
-  }
+  const isCpu = !nameValidateNotReserved(children);
 
   return (
-    <Grow in={show} onExited={() => onDelete()}>
+    <Grow in={show} onExited={isCpu ? undefined : onDelete}>
       <Grid item className={styles.paper} xs={12} sm={8} md={6} lg={4}>
         <Paper {...props}>
           <Grid
@@ -262,7 +260,7 @@ function PlayerPreview({ onDelete, children, ...props }) {
             <Grid item>
               <IconButton
                 aria-label={`delete player ${children}`}
-                onClick={handleDelete}
+                onClick={isCpu ? onDelete : () => setShow(false)}
               >
                 <DeleteIcon />
               </IconButton>
